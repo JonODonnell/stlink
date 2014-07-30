@@ -78,6 +78,7 @@
 #define FLASH_F4_CR_SNB_MASK 0x38
 #define FLASH_F4_SR_BSY 16
 
+#define MIN_USLEEP 10
 
 void write_uint32(unsigned char* buf, uint32_t ui) {
     if (!is_bigendian()) { // le -> le (don't swap)
@@ -288,7 +289,7 @@ static inline unsigned int is_flash_busy(stlink_t *sl) {
 static void wait_flash_busy(stlink_t *sl) {
     /* todo: add some delays here */
     while (is_flash_busy(sl))
-        ;
+        usleep(MIN_USLEEP);
 }
 
 static void wait_flash_busy_progress(stlink_t *sl) {
@@ -318,7 +319,7 @@ static void __attribute__((unused)) clear_flash_sr_eop(stlink_t *sl) {
 static void __attribute__((unused)) wait_flash_eop(stlink_t *sl) {
     /* todo: add some delays here */
     while (is_flash_eop(sl) == 0)
-        ;
+        usleep(MIN_USLEEP);
 }
 
 static inline void write_flash_ar(stlink_t *sl, uint32_t n) {
@@ -1084,7 +1085,7 @@ int stlink_erase_flash_page(stlink_t *sl, stm32_addr_t flashaddr)
          * it. If someone has a problem, please drop an email.
          */
         while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0)
-            ;
+            usleep(MIN_USLEEP);
 
 #endif /* fix_to_be_confirmed */
 
@@ -1096,7 +1097,7 @@ int stlink_erase_flash_page(stlink_t *sl, stm32_addr_t flashaddr)
            Test shows that a few iterations is performed in the following loop
            before busy bit is cleared.*/
         while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0)
-            ;
+            usleep(MIN_USLEEP);
 
         /* reset lock bits */
         val = stlink_read_debug32(sl, STM32L_FLASH_PECR)
@@ -1407,7 +1408,8 @@ int stm32l1_write_half_pages(stlink_t *sl, stm32_addr_t addr, uint8_t* base, uns
 
     val |= (1 << FLASH_L1_PROG);
     stlink_write_debug32(sl, STM32L_FLASH_PECR, val);
-    while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0) {}
+    while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0)
+        usleep(MIN_USLEEP);
 
 #define L1_WRITE_BLOCK_SIZE 0x80
     for (count = 0; count  < num_half_pages; count ++) {
@@ -1425,8 +1427,8 @@ int stm32l1_write_half_pages(stlink_t *sl, stm32_addr_t addr, uint8_t* base, uns
             fprintf(stdout, "\r%3u/%u halfpages written", count + 1, num_half_pages);
             fflush(stdout);
         }
-        while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0) {
-        }
+        while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0)
+            usleep(MIN_USLEEP);
     }
     val = stlink_read_debug32(sl, STM32L_FLASH_PECR);
     val &= ~(1 << FLASH_L1_PROG);
@@ -1578,7 +1580,7 @@ int stlink_write_flash(stlink_t *sl, stm32_addr_t addr, uint8_t* base, uint32_t 
 
             /* wait for sr.busy to be cleared */
             while ((stlink_read_debug32(sl, STM32L_FLASH_SR) & (1 << 0)) != 0)
-                ;
+                usleep(MIN_USLEEP);
 
             /* todo: check redo write operation */
 
@@ -1723,10 +1725,10 @@ int run_flash_loader(stlink_t *sl, flash_loader_t* fl, stm32_addr_t target, cons
     /* run loader */
     stlink_run(sl);
 
-#define WAIT_ROUNDS 10000
+#define WAIT_ROUNDS 10
     /* wait until done (reaches breakpoint) */
     for (i = 0; i < WAIT_ROUNDS; i++) {
-        usleep(10);
+        usleep(10000);
         if (is_core_halted(sl))
             break;
     }
