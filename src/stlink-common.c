@@ -1748,7 +1748,7 @@ int run_flash_loader(stlink_t *sl, flash_loader_t* fl, stm32_addr_t target, cons
 
         stlink_read_reg(sl, 3, &rr);
         if (rr.r[3] != count) {
-            fprintf(stderr, "write error, count == %u\n", rr.r[3]);
+            fprintf(stderr, "\nwrite error, %u != %u\n", rr.r[3], count);
             return -1;
         }
 
@@ -1756,7 +1756,7 @@ int run_flash_loader(stlink_t *sl, flash_loader_t* fl, stm32_addr_t target, cons
 
         stlink_read_reg(sl, 2, &rr);
         if (rr.r[2] != 0) {
-            fprintf(stderr, "write error, count == %u\n", rr.r[2]);
+            fprintf(stderr, "\nwrite error, %u != 0\n", rr.r[2]);
             return -1;
         }
 
@@ -1765,13 +1765,13 @@ int run_flash_loader(stlink_t *sl, flash_loader_t* fl, stm32_addr_t target, cons
 
         stlink_read_reg(sl, 2, &rr);
         if (rr.r[2] != 0) {
-            fprintf(stderr, "write error, count == %u\n", rr.r[2]);
+            fprintf(stderr, "\nwrite error, %u != 0\n", rr.r[2]);
             return -1;
         }
 
     } else {
 
-        fprintf(stderr, "unknown coreid 0x%x, can't check written byte count\n", sl->core_id);
+        fprintf(stderr, "\nunknown coreid 0x%x, can't check written byte count\n", sl->core_id);
         return -1;
 
     }
