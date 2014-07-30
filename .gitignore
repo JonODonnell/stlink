@@ -22,6 +22,7 @@ st-flash
 st-util
 st-term
 st-info
+stlink-gui
 test_usb
 test_sg
 *.deps*
