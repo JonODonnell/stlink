@@ -858,9 +858,7 @@ stlink_t* stlink_open_usb(const int verbose, int reset) {
         stlink_exit_dfu_mode(sl);
     }
 
-    if (stlink_current_mode(sl) != STLINK_DEV_DEBUG_MODE) {
-        stlink_enter_swd_mode(sl);
-    }
+    stlink_enter_swd_mode(sl);
 
     if (reset) {
         stlink_reset(sl);

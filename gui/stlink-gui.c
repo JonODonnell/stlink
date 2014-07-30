@@ -540,8 +540,7 @@ connect_button_cb (GtkWidget *widget, gpointer data)
     if (stlink_current_mode(gui->sl) == STLINK_DEV_DFU_MODE)
         stlink_exit_dfu_mode(gui->sl);
 
-    if (stlink_current_mode(gui->sl) != STLINK_DEV_DEBUG_MODE)
-        stlink_enter_swd_mode(gui->sl);
+    stlink_enter_swd_mode(gui->sl);
 
     /* Disable DMA - Set All DMA CCR Registers to zero. - AKS 1/7/2013 */
     if (gui->sl->chip_id == STM32_CHIPID_F4) {

@@ -134,8 +134,7 @@ int main(int ac, char** av)
     if (stlink_current_mode(sl) == STLINK_DEV_DFU_MODE)
         stlink_exit_dfu_mode(sl);
 
-    if (stlink_current_mode(sl) != STLINK_DEV_DEBUG_MODE)
-        stlink_enter_swd_mode(sl);
+    stlink_enter_swd_mode(sl);
 
     if (o.reset)
         stlink_reset(sl);
