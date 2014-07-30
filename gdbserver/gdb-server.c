@@ -997,8 +997,10 @@ int serve(stlink_t *sl, st_state_t *st) {
                     reply = strdup("E00");
                 }
 
-                reply = calloc(8 + 1, 1);
-                sprintf(reply, "%08x", myreg);
+                if(reply == NULL) {
+                    reply = calloc(8 + 1, 1);
+                    sprintf(reply, "%08x", myreg);
+                }
 
                 break;
             }
@@ -1151,12 +1153,13 @@ int serve(stlink_t *sl, st_state_t *st) {
                             reply = strdup("E00");
                         } else {
                             reply = strdup("OK");
-                            break;
                         }
+                        break;
                     }
 
                     default:
                         reply = strdup("");
+                        break;
                 }
                 break;
             }
@@ -1178,11 +1181,12 @@ int serve(stlink_t *sl, st_state_t *st) {
                             reply = strdup("E00");
                         } else {
                             reply = strdup("OK");
-                            break;
                         }
+                        break;
 
                     default:
                         reply = strdup("");
+                        break;
                 }
                 break;
             }
