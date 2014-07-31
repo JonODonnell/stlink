@@ -78,7 +78,7 @@
 #define FLASH_F4_CR_SNB_MASK 0x38
 #define FLASH_F4_SR_BSY 16
 
-#define MIN_USLEEP 10
+#define MIN_USLEEP 100
 
 void write_uint32(unsigned char* buf, uint32_t ui) {
     if (!is_bigendian()) { // le -> le (don't swap)
